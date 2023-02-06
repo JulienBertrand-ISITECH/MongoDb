@@ -10,7 +10,9 @@
 **Etape 3** :
 J'initialise mes documents dans une variable pour ensuite l'utiliser dans ma requête.
 
-***Entrée*** : var employees = [
+***Entrée*** : 
+```js
+var employees = [
    {
    name: "John Doe",
    age: 35,
@@ -30,9 +32,14 @@ J'initialise mes documents dans une variable pour ensuite l'utiliser dans ma req
    salary: 85000
    }
 ]
+```
 
-***Entrée*** : db.employees.insertMany(employees)  
+***Entrée*** : 
+```js
+db.employees.insertMany(employees)  
+```
 ***Sortie*** : 
+```js
 {
   acknowledged: true,
   insertedIds: {
@@ -41,9 +48,13 @@ J'initialise mes documents dans une variable pour ensuite l'utiliser dans ma req
     '2': ObjectId("63e11092dab2f2f8e0d01ef2")
   }
 }
+```
 
 # Écrivez une requête MongoDB pour trouver tous les documents dans la collection "employees".
-***Entrée*** : db.employees.find()   
+***Entrée*** :
+```js
+db.employees.find() 
+```  
 ***Sortie*** : Retourne tout les documents de la collection "employees"
 
 # Écrivez une requête pour trouver tous les documents où l'âge est supérieur à 33.  

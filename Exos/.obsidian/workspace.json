@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "exo.md",
+                "file": "exobook.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "exo.md",
+                "file": "exobook.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "exo.md",
+                "file": "exobook.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "exo.md"
+                "file": "exobook.md"
               }
             }
           }
@@ -148,7 +148,7 @@
   },
   "active": "7aad1ccdca38318d",
   "lastOpenFiles": [
-    "exobook.md",
-    "exo.md"
+    "exo.md",
+    "exobook.md"
   ]
 }
