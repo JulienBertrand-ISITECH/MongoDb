@@ -95,10 +95,9 @@ J'initialise mes documents dans une variable pour ensuite l'utiliser dans ma req
 Je recherche dans ma collection "employees" où l'id existe tout les documents, et je retourne uniquement les noms et les jobs.
 
 # Écrivez une requête pour compter le nombre d'employés par poste.
-***Entrée*** : db.employees.countDocuments()  
-***Sortie*** : 3
+***Entrée*** : db.employees.aggregate([{$group:{_id:"$job",NombreEmployé:{ $count: {}}}}])
 
-En utilisant la fonction countDocuments(),la requête nous retourne le nombre de documents. Attention, la fonction ".count() est deprecated ! 
+En utilisant la fonction aggregate() et l'opérateur $group nous pouvons séparer les documents en groupes selon une clé. Dans notre cas, la clé est le "job". Ensuite, nous comptons chaque documents présent par clé avec la fonction count
 
 # Écrivez une requête pour mettre à jour le salaire de tous les développeurs à 80000.
 ***entrée*** : db.employees.updateMany({"job": "Developer"}, {$set: {"salary": 80000}})  
@@ -110,3 +109,4 @@ En utilisant la fonction countDocuments(),la requête nous retourne le nombre de
   modifiedCount: 1,
   upsertedCount: 0
 }
+
