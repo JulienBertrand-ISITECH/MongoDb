@@ -89,3 +89,285 @@ log --logappend
 
 Par défault, le port d'écoute est le 27017.
 
+#### Création d'une base de donnée MongoDB
+
+Normalement, nous n'avons pas besoin de toucher à :
+- Admin
+- config
+- local
+
+#### Commande MongoDB
+``` javascript
+
+/* commande de base */
+// La commande principale consiste à vérifier la version installée du serveur MongoDB et Mongo Shell
+mongod --version
+
+// loste les commandes
+help() 
+
+db.stats() // 
+
+// voir la bdd
+show databases 
+
+// voir les collections
+show collection 
+
+// permet de changer de bdd
+use [nom de la db] 
+
+// créé un utilisateur possédant les pleins pouvoir sur toutes les db
+db.createUser({"user": "superUser", "pwd" : "password", "roles": [ {"role": "userAdmin", "db", "admin"}, "readWriteAnyDatabase" ]}) 
+
+
+```
+
+##### Créer une bdd
+```js
+// Créé une collection avec une_cle et une_valeur.
+db.uneCollection.insertOne({"une-cle": "une_valeur"}) 
+
+// Variable global qui stocke le nom de la base en cours d\'utilisation
+"db"
+
+// affiche les documents de la collections de la base en cours d\'éxécution.
+db.uneCollection.find() 
+```
+
+##### Suprimer une BDD
+```js
+use [NOMDELABDDASUPPRIMER]
+db.dropDatabase() // ne pas oublier les () sinon ca ne fonctionne pas !
+```
+
+
+##### Affiche les stats de la bdd
+``` js
+db.runCommand({"collstats": "uneCollection"})
+
+db.adminCommand("currentOp")
+```
+
+
+##### Gestion des collections
+###### Les collations
+
+Les collations servent à définir les règles sur les chaines de caractères.
+```
+{
+	**local**: <string>,,
+	caseLevel: <boolean>,
+	caseFirst: <string>,
+	strength: <entier>,
+	numericOrdering: <boolean>,
+	....
+}
+```
+
+Au sein de ce type de document, le champ local est obligatoire.
+- Deux valeur pour la local : FR et ??
+
+###### Creer une collection
+```js
+db.createCollection("maCollection", {"collation": {"local": "fr"} })
+```
+
+###### Renommer une collection 
+[RenameColelction](https://www.mongodb.com/docs/manual/reference/command/renameCollection/)
+```js
+db.runCommand(
+   {
+     renameCollection: "<source_namespace>",
+     to: "<target_namespace>",
+     dropTarget: <true|false>,
+     writeConcern: <document>,
+     comment: <any>
+   }
+)
+```
+
+##### Les documents
+###### Insertion d'un document
+
+```js
+db.maCollection.insertOne(< /*documents ou tableau de documents*/ >)
+
+db.personnes.insertOne([
+	{"nom": "Bertrand", "prenom": "Julien"},
+	{"nom": "l'éponde", "prenom": "Bob", "age": 8}						
+])
+```
+
+###### Modification d'un document 
+```js
+//filtre = permet de cibler les champs souhaité
+//modification = permet de réaliser les modifications sur les champs filtrés
+db.collection.updateOne(<filtre>, <modifications>)
+
+db.personnes.update(
+	{"nom": "Bertrand"},
+	{
+		$set : { "nom": "bertrand" }
+	}
+)
+```
+
+Cas de l'upsert : la combinaison d'update et d'insert.
+```js
+db.personnes.updateOne(
+	{"nom": "Bertrand"},
+	{
+		$set : { "nom": "bertrand" }
+	},
+	{
+		"upsert": true
+	}
+)
+```
+
+##### Effectuer des recherches
+
+###### La méthode 'findAndModify'
+[findAndModify](https://www.mongodb.com/docs/manual/reference/method/db.collection.findAndModify/)
+Modifie et renvoie un seul document. Par défaut, le document retourné n'inclut pas les modifications apportées à la mise à jour. Pour retourner le document avec les modifications apportées à la mise à jour, utilisez l' `new`option.
+```js
+db.collection.findAndModify({
+    query: <document>,
+    sort: <document>,
+    remove: <boolean>,
+    update: <document or aggregation pipeline>, // Changed in MongoDB 4.2
+    new: <boolean>,
+    fields: <document>,
+    upsert: <boolean>,
+    bypassDocumentValidation: <boolean>,
+    writeConcern: <document>,
+    collation: <document>,
+    arrayFilters: [ <filterdocument1>, ... ],
+    let: <document> // Added in MongoDB 5.0
+});
+```
+
+##### Validation des documents
+```js
+var atheles = [
+	{
+		"nom": "Eclair",
+		"prenom": "Jean-Michel",
+		"discipline": "Course"
+	},
+	{
+		"nom": "Cavalera",
+		"prenom": "Max",
+		"discipline": "Saut de haies"
+	},
+	{
+		"nom": "Hammer",
+		"prenom": "Ski"
+	}
+]
+
+db.athletes.insertMany(athletes)
+
+var proprietes = {
+	"nom" : {
+		"bsonType": "string",
+		"pattern": "^[A-Z]",
+		"description" : "Chaine de caractères + expr régulière - obligatoire" },
+	"prenom": {
+		"bsonType": "string",
+		"description": "Chaine de caractère -obligatoire" },
+	"discipline": {
+		"enum": ["Course", "Lancer de marteau", "Ski"],
+		"description": "Enumeration - obligatoire"
+	}
+}
+```
+
+Maintenant que nos règles sont établies, nous allons modifier la collection à l'aide de la commande `colMod`
+
+```js
+db.runCommand(
+	{
+		"collMod": "athletes",
+		"validaitor: 
+		{
+			$jsonSchema: 
+			{
+				"bsonType": "object",
+				"required": ["nom", "prenom", "discipline"],
+				"properties": properties
+			}	
+		}
+	}
+)
+```
+
+Les méthodes find et findOne ont la même signature et permettent d'effectuer des requestes Mongo.
+
+```js
+db.collection.find(<requete>, <projection>)
+```
+
+Chacun de ces paramètres sont tous deux des documents. (par defaud ça retourne 20 documents)
+
+```js
+DBQuery.shellBatchSize = 40
+```
+
+mongorc.js est un fichier de config qui se retrouve à la racine du répertoire utilisateur.
+
+/home/userName
+```js
+db.maCollection.find().limite(12)
+db.maCollection.find().limite(12).pretty()
+```
+
+On peut utiliser des operateurs afin d'affiner la recherche :
+
+```js
+db.maCollection.find({"age": {$eq: 76} }) // retourne toutes les personnes qui ont 76 ans.
+db.maCollection.find({"age": 76}, {"prenom": true}) // ne retourne que les prenoms de ceux qui ont 76 ans.
+```
+
+On retrouve d'autres opérateurs tels que :
+- $ne : différent de
+- $gt : supérieur à
+- $gte : supérieur ou egal à
+- $lt: inférieur à
+- $lte: inférieur ou égal à 
+- $in : absence
+- $nin: presence
+
+On peut combiner ces opérateurs pour effectuer des recherches sur des intervalles :
+```js
+db.maCollection.find({"age": { $lt: 50, $gt: 20 }})
+db.maCollection.find({"age": { $nin: [23, 45, 78] }})
+db.maCollection.find({"age": { $exists: true }})
+```
+
+Les opérateurs logiques :
+
+```js
+db.personnes.find(
+	{
+		$and: [
+			{
+				"age": {
+					$exists: true || 1
+				}
+			},
+			{
+				"age": {
+					$nin: [23, 45, 234, 100]
+				}
+			}
+		]
+	},
+	{
+		"_id": false || 0,
+		"nom": "1",
+		"prenom": "1"
+	}
+)
+```
