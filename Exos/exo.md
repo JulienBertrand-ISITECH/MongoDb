@@ -66,9 +66,14 @@ db.salles.insertMany([
 ]) 
 ```
 
-Exercice 1
+# Exercice 1
 
 Affichez l’identifiant et le nom des salles qui sont des SMAC.
+
+Pour afficher l'identifiant et le nom des salles qui sont des SMAC, nous devons réaliser la requête suivant : 
+```js
+db.salles.find({"smac": true}, {"_id": 1, "nom": 1})
+```
 
 Exercice 2
 
