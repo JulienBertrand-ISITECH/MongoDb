@@ -68,56 +68,244 @@ db.salles.insertMany([
 
 # Exercice 1
 
-Affichez l’identifiant et le nom des salles qui sont des SMAC.
+#### Affichez l’identifiant et le nom des salles qui sont des SMAC.
 
 Pour afficher l'identifiant et le nom des salles qui sont des SMAC, nous devons réaliser la requête suivant : 
+***Entrée*** :
 ```js
 db.salles.find({"smac": true}, {"_id": 1, "nom": 1})
 ```
 
-Exercice 2
+***Sortie*** :
+```js
+{  _id: 1,  nom: 'AJMI Jazz Club'}
 
-Affichez le nom des salles qui possèdent une capacité d’accueil strictement supérieure à 1000 places.
+{  _id: 2,  nom: 'Paloma'}
+```
 
-Exercice 3
+Cette requête indique que nous souhaitons rechercher tout les documents qui possèdent le champ `smac` à `true`.
 
-Affichez l’identifiant des salles pour lesquelles le champ adresse ne comporte pas de numéro.
+# Exercice 2
 
-Exercice 4
+#### Affichez le nom des salles qui possèdent une capacité d’accueil strictement supérieure à 1000 places.
 
-Affichez l’identifiant puis le nom des salles qui ont exactement un avis.
+Pour afficher le nom des salles qui possèdent une capacité d'accueil strictement supérieur à 1000 places, nous devons réaliser la requête suivante :
 
-Exercice 5
+***Entrée*** : 
+```js
+db.salles.find({"capacite": {$gt:1000}}, {"_id":0,"nom":1})
+```
 
-Affichez tous les styles musicaux des salles qui programment notamment du blues.
+***Sortie*** :
+```js
+{  nom: 'Paloma'}
+```
 
-Exercice 6
+Avec cette requête, nous cherchons dans la collection 'salles' toutes les salles dont la capacité est strictement supérieur à 1000 avec l'opérateur `$gt`  et nous affichons uniquement les noms de celle-ci avec les paramètres suivants : ` {"_id":0,"nom":1}`
 
-Affichez tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles.
+# Exercice 3
 
-Exercice 7
+#### Affichez l’identifiant des salles pour lesquelles le champ adresse ne comporte pas de numéro.
 
-Affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places (pensez à utiliser une expression régulière).
+Pour afficher l'identifiant des salles pour lesquelles le champ adresse ne comporte pas de numéro, il faut effectuer la requête suivante :
 
-Exercice 8
+***Entrée*** :
+```js
+db.salles.find({"adresse.numero": null}, {"_id":1})
+```
 
-Affichez l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent.
+***Sortie*** :
+```js
+{  _id: 3}
+```
 
-Exercice 9
+# Exercice 4
 
-Affichez le nom des salles dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus).
+#### Affichez l’identifiant puis le nom des salles qui ont exactement un avis.
 
-Exercice 10
+Pour afficher l'identifiant puis le nom des salles qui ont exactement un avis, il faut réaliser la requête suivante : 
 
-Affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019 (pensez à utiliser le type JavaScript Date).
+***Entrée*** : 
+```js
+db.salles.find({avis: { $size:1}}, {_id:1, nom:1})
+```
 
-Exercice 11
+***Sortie***
+```js
+{
+	_id: 2,
+	nom: 'Paloma'
+}
+```
+# Exercice 5
 
-Affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité.
+#### Affichez tous les styles musicaux des salles qui programment notamment du blues.
 
-Exercice 12
+Afin de pouvoir afficher tous les styles musicaux des salles qui programment  notamment du blues, il faut effectuer la requête suivant :
 
-Affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents en utilisant l’opérateur $where qui permet de faire usage de JavaScript.
+***Entrée*** :
+```js
+db.salles.find({"styles":"blues"}, { _id:0, nom:1, styles:1 })
+```
+
+***Sortie*** :
+```js
+{  nom: 'AJMI Jazz Club',  styles: [    'jazz',    'soul',    'funk',    'blues'  ]}
+
+{  nom: 'Sonograf',  styles: [    'blues',    'rock'  ]}
+```
+
+# Exercice 6
+
+#### Affichez tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles.
+
+Pour affichez tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles, il faut effectuer la requête suivant :
+
+***Entrée*** : 
+```js
+db.salles.find({"styles.0":"blues"}, { _id:0, nom:1, styles:1 })
+```
+
+***Sortie*** : 
+```js
+{  nom: 'Sonograf',  styles: [    'blues',    'rock'  ]}
+```
+
+# Exercice 7
+
+#### Affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places (pensez à utiliser une expression régulière).
+
+Pour affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places, il faut effectuer la requête suivante :
+
+***Entrée*** :
+```js
+db.salles.find(
+	{		
+			"adresse.codePostal": { $regex: /^84/i },
+			"capacite": {$lt: 500}
+	},
+	{
+		"_id":0,
+		"adresse.ville":1
+	}
+)
+```
+
+***Sortie*** : 
+
+```js
+{  adresse: {    ville: 'Avignon'  }}
+{  adresse: {    ville: 'Le Thor'  }}
+```
+
+# Exercice 8
+
+#### Affichez l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent.
+
+Pour affichez l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent, il faut effectuer la requête suivante :
+
+***Entrée*** :
+```js
+db.salles.find(
+	{		
+		$or: [ { _id: {$mod: [ 2, 0 ]} }, {avis: null}]
+	},
+	{
+		"_id":1
+	}
+)
+```
+
+***Sortie*** : 
+```js
+{  _id: 2}
+{  _id: 3}
+```
+
+# Exercice 9
+
+#### Affichez le nom des salles dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus).
+
+Pour affichez le nom des salles dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus), il faut effectuer la requête suivante :
+
+***Entrée*** :
+```js
+db.salles.find(
+	{		
+		"avis.note": { $gte: 8, $lte: 10}
+	},
+	{
+		"nom":1
+	}
+)
+```
+
+***Sortie*** : 
+```js
+{  _id: 1,  nom: 'AJMI Jazz Club'}
+{  _id: 2,  nom: 'Paloma'}
+```
+
+# Exercice 10
+
+#### Affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019 (pensez à utiliser le type JavaScript Date).
+
+Pour affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019, il faut effectuer la requête suivante en utilisant la fonction Date() de js :
+
+***entrée*** :
+```js
+db.salles.find(
+	{		
+		"avis.date": {$lt: new Date("2019-11-15T00:00:00.000+00:00")}
+	},
+	{
+		"nom":1
+	}
+)
+```
+
+# Exercice 11
+
+#### Affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité.
+
+Pour affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité, il faut effectuer la requête suivante :
+
+***Entrée*** :
+```js
+db.salles.find(
+	{		
+		"_id": {$exists: 1},
+		"nom": { $exists: 1 },
+		"capacite": { $exists: 1 },
+		$expr: { $gt: [ { $multiply: [ "$_id", 100] }, "$capacite"] }
+	},
+	{
+		"_id":0,
+		"nom":1,
+		"capacite":1
+	}
+)
+```
+
+# Exercice 12
+
+#### Affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents en utilisant l’opérateur $where qui permet de faire usage de JavaScript.
+
+***Entrée*** :
+```js
+db.salles.find(
+	{		
+		"_id": {$exists: 1},
+		"nom": { $exists: 1 },
+		"capacite": { $exists: 1 },
+		$expr: { $gt: [ { $multiply: [ "$_id", 100] }, "$capacite"] }
+	},
+	{
+		"_id":0,
+		"nom":1
+	}
+)
+```
 
 Exercice 13
 

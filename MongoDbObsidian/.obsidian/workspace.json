@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Cours du 6 Fevrier.md",
+                "file": "1- Prise de note - cours.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Cours du 6 Fevrier.md",
+                "file": "1- Prise de note - cours.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Cours du 6 Fevrier.md",
+                "file": "1- Prise de note - cours.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Cours du 6 Fevrier.md"
+                "file": "1- Prise de note - cours.md"
               }
             }
           }
@@ -148,9 +148,10 @@
   },
   "active": "24eb3756103e1d1e",
   "lastOpenFiles": [
+    "2- Vocabulaire.md",
+    "0- Introduction.md",
     "Parenthèse cours.md",
-    "Cours du 6 Fevrier.md",
-    "Vocabulaire.md",
-    "Introduction.md"
+    "1- Prise de note - cours.md",
+    "Untitled.md"
   ]
 }

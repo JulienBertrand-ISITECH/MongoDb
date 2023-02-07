@@ -187,7 +187,7 @@ db.runCommand(
 )
 ```
 
-##### Les documents
+#### Les documents
 ###### Insertion d'un document
 
 ```js
@@ -226,8 +226,7 @@ db.personnes.updateOne(
 )
 ```
 
-##### Effectuer des recherches
-
+#### Effectuer des recherches
 ###### La méthode 'findAndModify'
 [findAndModify](https://www.mongodb.com/docs/manual/reference/method/db.collection.findAndModify/)
 Modifie et renvoie un seul document. Par défaut, le document retourné n'inclut pas les modifications apportées à la mise à jour. Pour retourner le document avec les modifications apportées à la mise à jour, utilisez l' `new`option.
@@ -248,7 +247,7 @@ db.collection.findAndModify({
 });
 ```
 
-##### Validation des documents
+#### Validation des documents
 ```js
 var atheles = [
 	{
@@ -336,8 +335,8 @@ On retrouve d'autres opérateurs tels que :
 - $gte : supérieur ou egal à
 - $lt: inférieur à
 - $lte: inférieur ou égal à 
-- $in : absence
-- $nin: presence
+- $nin : absence
+- $in: presence
 
 On peut combiner ces opérateurs pour effectuer des recherches sur des intervalles :
 ```js
@@ -346,7 +345,7 @@ db.maCollection.find({"age": { $nin: [23, 45, 78] }})
 db.maCollection.find({"age": { $exists: true }})
 ```
 
-Les opérateurs logiques :
+#### Les opérateurs logiques :
 
 ```js
 db.personnes.find(
@@ -370,4 +369,141 @@ db.personnes.find(
 		"prenom": "1"
 	}
 )
+```
+
+##### L'opérateur `$expr`
+
+[Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/expr/)
+
+Il permet d'utiliser des expressions dans nos requêtes. Ces expressions pourront contenir des opérateurs, des objets ou encore des chemins de champ. (field path // $NomDeLaVariable)
+
+On va chercher à afficher les documents dont la longueur du nom multipliée parn 12 est supérieur à l'âge.
+
+```js
+	db.maCollection.find({
+		"nom": { $exists: 1 },
+		"age": { $exists: 1 },
+		$expr: { $gt: [ { $multiply: [ { $strLenCP: "$nom" }, 12] }, "$age" ] }
+	},
+	{
+		"_id":0
+		"nom":1
+	}
+)
+```
+
+Afficher les comptes dont la sommes des opérations de débit est supérieur au montant du credit :
+
+```js
+	db.banque.find({
+		"credit": { $exists: 1 },
+		"debit": { $exists: 1 },
+		$expr: { $gt: [ { $sum: "$debit" }, "$credit" ] }
+	}
+)
+```
+
+##### L'opérateur `$type`
+
+[Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/type/)
+
+```js
+{ champ :  {  $type: < type BSON > } }
+ 
+{ champ :  {  $type: [< type BSON >, < type BSON >] } }
+```
+
+```js
+db.personnes.insertOne({
+	"nom": "Zidane", "prenom": "Z", "age": numberInt(50)
+})
+```
+
+##### L'opérateur `$mod`
+
+[Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/mod/)
+
+```js
+{ champ: {$mod: [diviseur, reste] } }
+```
+
+##### L'opérateur `$Where`
+
+[Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/where/)
+
+L'opérateur `$Where` permet d'éxécuter directement du javascript.
+
+Exemple :
+```js
+db.personnes.find({ $where: "this.nom.lenght > 6" })
+
+// Equivalent avec une fonction
+db.personnes.find({ $where: function() {
+	return obj.nom.lenght > 6
+} })
+```
+
+##### Les opérateurs de tableau
+[Lien vers la doc $push](https://www.mongodb.com/docs/manual/reference/operator/update/push/)
+[Lien vers la doc $pull](https://www.mongodb.com/docs/manual/reference/operator/update/pull/)
+
+```js
+{ $push: { <champ>: <valeur>, ... } }
+```
+
+```js
+{ $pull: { <field1>: <value|condition>... } }
+```
+
+	Exemple pour `$push` (Ajoute un champ)
+```js
+db.hobbies.updateOne( {_id:1}, {$push: {passions: "streetFighter"}})
+db.hobbies.updateMany( {}, {$push: {passions: "streetFighter"}})
+```
+
+Exeple pour `$pull` (Retire un champ)
+```js
+db.hobbies.updateOne( {_id:3}, {$pull: {passions: "paracute"}})
+```
+
+##### L'opérateur `$addToSet`
+[Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/update/addToSet/)
+
+Permet d'éviter l'ajout de doublon, a privilégier à `$push`.
+
+Exemple :
+```js
+db.hobbies.updateOne( {_id:1}, {$addToSet: {passions: "streetFighter"}})
+```
+
+#### Question :
+```js
+db.personnes.find({interets:"jardinage"})
+
+db.personnes.find({interets:["jardinage", "bridge"]})
+
+db.personnes.find({interets:["bridge", "jardinage"]})
+
+// permet de chercher peut importe l'ordre.
+db.personnes.find({interets: {$all: ["bridge", "jardinage"]}}) 
+
+// rehcreche le spersonne dont l'interet 1 est jardiange
+db.personnes.find({ "interets.1": "jardinage" }) 
+
+// Recherche les personnes qui ont deux interêts
+db.personnes.find({ "interets": {$size: 2} }) 
+
+// Recherche les personnes qui ont au moins 2 interets. (les tableaux commence à 0 donc 0 =1, 1=2 ....)
+db.personnes.find({ "interets.1": {$exists:1} })
+```
+
+#### L'opérateur `$elemMatch`
+
+[Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/)
+
+```js
+db.eleves.find({ "notes": { $elemMatch :  { $gt: 0, $lt: 10} }})
+
+db.eleves.find({ "notes" : { $all : [5, 7.50] } }) // Ne retourne que les élèves qui ont eu 5 et 7.5. Ca agit comme un && logique.
+
 ```
