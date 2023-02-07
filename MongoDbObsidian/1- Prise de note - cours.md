@@ -295,7 +295,7 @@ db.runCommand(
 			{
 				"bsonType": "object",
 				"required": ["nom", "prenom", "discipline"],
-				"properties": properties
+				"properties": proprietes
 			}	
 		}
 	}

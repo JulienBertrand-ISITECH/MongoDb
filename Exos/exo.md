@@ -114,7 +114,7 @@ Pour afficher l'identifiant des salles pour lesquelles le champ adresse ne compo
 db.salles.find({"adresse.numero": null}, {"_id":1})
 ```
 
-Nous filtrons sur le champ `adresse.numero` si vide et affichons les `id` qui ont la condition valide.
+Nous filtrons sur la propriété de l'objet `adresse.numero` si vide et affichons les `id` qui ont la condition valide.
 
 ***Sortie*** :
 ```js
@@ -133,7 +133,7 @@ Pour afficher l'identifiant puis le nom des salles qui ont exactement un avis, i
 db.salles.find({avis: { $size:1}}, {_id:1, nom:1})
 ```
 
-Nous filtrons sur le tableau `avis` dont la taille de celui-ci est de 1 et nous affichons les documents remplissant cette condition en affichant uniquement l'`id` et le `nom`.
+Nous filtrons sur l'objet `avis` dont la taille de celui-ci est de 1 et nous affichons les documents remplissant cette condition en affichant uniquement l'`id` et le `nom`.
 
 ***Sortie***
 ```js

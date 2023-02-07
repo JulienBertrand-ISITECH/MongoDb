@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "exobook.md",
+                "file": "validation.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "exobook.md",
+                "file": "validation.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "exobook.md",
+                "file": "validation.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "exobook.md"
+                "file": "validation.md"
               }
             }
           }
@@ -149,8 +149,8 @@
   "active": "baad735c6260baf6",
   "lastOpenFiles": [
     "exo.md",
-    "exobook.md",
     "validation.md",
+    "exobook.md",
     "Exo Pendant le cour.md"
   ]
 }
