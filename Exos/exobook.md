@@ -4,11 +4,14 @@
 ***Entrée*** : use sample_db
 
 **Etape 2**
-***Entrée*** : db.createCollection("employees")  
-***Sortie*** : Je viens de créer ma collection "employees" dans ma db "sample_db"
+```js
+db.createCollection("employees")  
+```
+
+ Je viens de créer ma collection "employees" dans ma db "sample_db"
 
 **Etape 3** :
-J'initialise mes documents dans une variable pour ensuite l'utiliser dans ma requête.
+J'initialise mes documents dans une variable pour ensuite l'utiliser dans ma requête "insertMany()".
 
 ***Entrée*** : 
 ```js
@@ -38,7 +41,9 @@ var employees = [
 ```js
 db.employees.insertMany(employees)  
 ```
-***Sortie*** : 
+
+***Sortie*** : Mes documents ont bien été insérés.
+
 ```js
 {
   acknowledged: true,
@@ -51,20 +56,32 @@ db.employees.insertMany(employees)
 ```
 
 # Écrivez une requête MongoDB pour trouver tous les documents dans la collection "employees".
+
 ***Entrée*** :
 ```js
 db.employees.find() 
 ```  
-***Sortie*** : Retourne tout les documents de la collection "employees"
+
+***Sortie*** : Retourne tout les documents de la collection "employees" grâce à la fonction "find()"
 
 # Écrivez une requête pour trouver tous les documents où l'âge est supérieur à 33.  
-***Entrée*** : db.employees.find({"age": {$gt:33}})    
+***Entrée*** :  Dans ma fonction find(), j'indique avec l'opérateur "$gt" que je souhaites retourner uniquement les documents dont l'age est supérieur à 33.
+
+```js
+db.employees.find({"age": {$gt:33}}) 
+```
+   
 ***Sortie*** : Retourne 2 documents dont l'age est supérieur à 33 ans.
 
 # Écrivez une requête pour trier les documents dans la collection "employees" par salaire décroissant.
-***Entrée*** : db.employees.find().sort({"salary": 1})  
+
+***Entrée*** : Afin de pouvoir trier les documents de ma collection, j'effectue successivement la fonction 'find()' et 'sort()'
+```js
+db.employees.find().sort({"salary": 1})
+```
 ***Sortie*** Retourne la liste des employées dans l'ordre croissant de leur salaire.
 
+```js
 {
   _id: ObjectId("63e11092dab2f2f8e0d01ef1"),
   name: 'Jane Doe',
@@ -86,10 +103,17 @@ db.employees.find()
   job: 'Manager',
   salary: 85000
 }
+```
 
 # Écrivez une requête pour sélectionner uniquement le nom et le job de chaque document.  
-***Entrée*** : db.employees.find({"_id": { $exists: true }}, {"_id":0, "name":1, "job": 1})   
+***Entrée*** : Je recherche dans ma collection "employees" où l'id existe tout les documents, et je retourne uniquement les noms et les jobs.
+
+```js
+db.employees.find({"_id": { $exists: true }}, {"_id":0, "name":1, "job": 1})   
+```
+
 ***Sortie*** :
+```js
 {
   name: 'John Doe',
   job: 'Manager'
@@ -102,17 +126,42 @@ db.employees.find()
   name: 'Jim Smith',
   job: 'Manager'
 }
-
-Je recherche dans ma collection "employees" où l'id existe tout les documents, et je retourne uniquement les noms et les jobs.
+```
 
 # Écrivez une requête pour compter le nombre d'employés par poste.
-***Entrée*** : db.employees.aggregate([{$group:{_id:"$job",NombreEmployé:{ $count: {}}}}])
+***Entrée*** : En utilisant la fonction aggregate() et l'opérateur $group nous pouvons séparer les documents en groupes selon une clé. Dans notre cas, la clé est le "job". Ensuite, nous comptons chaque documents présent par clé avec la fonction count.
 
-En utilisant la fonction aggregate() et l'opérateur $group nous pouvons séparer les documents en groupes selon une clé. Dans notre cas, la clé est le "job". Ensuite, nous comptons chaque documents présent par clé avec la fonction count
+```js
+db.employees.aggregate(
+	[
+		{
+			$group:
+			{
+				_id:"$job",NombreEmployé:
+					{ 
+						$count: {}
+					}
+			}
+		}
+	]
+)
+```
 
 # Écrivez une requête pour mettre à jour le salaire de tous les développeurs à 80000.
-***entrée*** : db.employees.updateMany({"job": "Developer"}, {$set: {"salary": 80000}})  
+***entrée*** : Pour pouvoir mettre à jour le salaire de tous les développeurs, je réalise un 'updateMany()' en passant en paramètre le job "Developeur".
+```js
+db.employees.updateMany(
+	{
+		"job": "Developer"
+	}, 
+	{
+		$set: {"salary": 80000}
+	}
+)  
+```
+
 ***Sortie*** : 
+```js
 {
   acknowledged: true,
   insertedId: null,
@@ -120,4 +169,6 @@ En utilisant la fonction aggregate() et l'opérateur $group nous pouvons sépare
   modifiedCount: 1,
   upsertedCount: 0
 }
+```
+
 
