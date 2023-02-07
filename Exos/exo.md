@@ -292,6 +292,7 @@ db.salles.find(
 #### Affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents en utilisant l’opérateur $where qui permet de faire usage de JavaScript.
 
 Pour affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents, il faut effectuer la requête suivante :
+
 ***Entrée*** :
 ```js
 db.salles.find(
@@ -306,21 +307,86 @@ db.salles.find(
 )
 ```
 
-Exercice 13
+# Exercice 13
 
-Affichez les différents codes postaux présents dans les documents de la collection salles.
+#### Affichez les différents codes postaux présents dans les documents de la collection salles.
+
+Pour affichez les différents codes postaux présents dans les documents de la collection salles, il faut effectuer la requête suivante :
+
+***Entrée*** :
+```js
+db.salles.find(
+	{
+		"adresse.codePostal": {$exists: 1}
+	},
+	{
+		"_id":0,
+		"adresse.codePostal":1
+	}
+)
+```
+
+***Sortie*** :
+```js
+{  adresse: {    codePostal: '84000'  }}
+{  adresse: {    codePostal: '30000'  }}
+{  adresse: {    codePostal: '84250'  }}
+```
 
 Exercice 14
 
 Mettez à jour tous les documents de la collection salles en rajoutant 100 personnes à leur capacité actuelle.
 
+Pour mettre à jour tous les documents de la collection salles en rajoutant 100 personnes à leur capacité actuelle, il faut effectuer la requête suivante :
+
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"capacite": {$exists:1}
+	},
+	{
+		$inc: {"capacite": 100}
+	}
+)
+```
+
 Exercice 15
 
 Ajoutez le style « jazz » à toutes les salles qui n’en programment pas.
 
-Exercice 16
+Pour ajoutez le style « jazz » à toutes les salles qui n’en programment pas,  il faut effectuer la requête suivante avec l'opérateur `$addToSet`
 
-Retirez le style «funk» à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3.
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"styles": {$exists:1}
+	},
+	{
+		$addToSet: {"styles": "jazz"}
+	}
+)
+```
+
+# Exercice 16
+
+#### Retirez le style «funk» à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3.
+
+Pour retirez le style «funk» à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3, il faut effectuer la requête suivante :
+
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"styles": {$exists:1},
+		_id: {$nin: [2,3]}
+	},
+	{
+		$push: {"styles": "jazz"}
+	}
+)
+```
 
 Exercice 17
 
