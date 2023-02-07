@@ -70,7 +70,7 @@ db.salles.insertMany([
 
 #### Affichez l’identifiant et le nom des salles qui sont des SMAC.
 
-Pour afficher l'identifiant et le nom des salles qui sont des SMAC, nous devons réaliser la requête suivant : 
+Pour afficher l'identifiant et le nom des salles qui sont des SMAC, nous devons réaliser la requête suivante : 
 ***Entrée*** :
 ```js
 db.salles.find({"smac": true}, {"_id": 1, "nom": 1})
@@ -83,7 +83,7 @@ db.salles.find({"smac": true}, {"_id": 1, "nom": 1})
 {  _id: 2,  nom: 'Paloma'}
 ```
 
-Cette requête indique que nous souhaitons rechercher tout les documents qui possèdent le champ `smac` à `true`.
+Cette requête indique que nous souhaitons rechercher tous les documents possédant le champ `smac` à `true` présent sur la collection `salles`.
 
 # Exercice 2
 
@@ -101,7 +101,7 @@ db.salles.find({"capacite": {$gt:1000}}, {"_id":0,"nom":1})
 {  nom: 'Paloma'}
 ```
 
-Avec cette requête, nous cherchons dans la collection 'salles' toutes les salles dont la capacité est strictement supérieur à 1000 avec l'opérateur `$gt`  et nous affichons uniquement les noms de celle-ci avec les paramètres suivants : ` {"_id":0,"nom":1}`
+Avec cette requête, nous cherchons dans la collection 'salles' toutes les salles dont la capacité est strictement supérieure à 1000 avec l'opérateur `$gt`  et nous affichons uniquement les noms de celle-ci avec les paramètres suivants : `{"_id":0,"nom":1}`
 
 # Exercice 3
 
@@ -146,7 +146,7 @@ Nous filtrons sur le tableau `avis` dont la taille de celui-ci est de 1 et nous 
 
 #### Affichez tous les styles musicaux des salles qui programment notamment du blues.
 
-Afin de pouvoir afficher tous les styles musicaux des salles qui programment  notamment du blues, il faut effectuer la requête suivant :
+Afin de pouvoir afficher tous les styles musicaux des salles qui programment notamment du blues, il faut effectuer la requête suivant :
 
 ***Entrée*** :
 ```js
@@ -155,34 +155,34 @@ db.salles.find({"styles":"blues"}, { _id:0, nom:1, styles:1 })
 
 ***Sortie*** :
 ```js
-{  nom: 'AJMI Jazz Club',  styles: [    'jazz',    'soul',    'funk',    'blues'  ]}
+{  nom:'AJMI Jazz Club', styles:[ 'jazz', 'soul', 'funk', 'blues' ]}
 
-{  nom: 'Sonograf',  styles: [    'blues',    'rock'  ]}
+{  nom:'Sonograf', styles:[ 'blues', 'rock' ]}
 ```
 
 # Exercice 6
 
 #### Affichez tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles.
 
-Pour affichez tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles, il faut effectuer la requête suivant :
+Pour afficher tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles, il faut effectuer la requête suivante :
 
 ***Entrée*** : 
 ```js
 db.salles.find({"styles.0":"blues"}, { _id:0, nom:1, styles:1 })
 ```
 
-Nous filtrons sur la premiere valeur du champ `styles` et retournons tout les documents remplissant cette condition en affichant le `nom` et le `style`.
+Nous filtrons sur la première valeur du champ `styles` et retournons tous les documents remplissant cette condition en affichant le `nom` et le `style`.
 
 ***Sortie*** : 
 ```js
-{  nom: 'Sonograf',  styles: [    'blues',    'rock'  ]}
+{  nom:'Sonograf', styles:[ 'blues', 'rock' ]}
 ```
 
 # Exercice 7
 
 #### Affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places (pensez à utiliser une expression régulière).
 
-Pour affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places, il faut effectuer la requête suivante :
+Pour afficher la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places, il faut effectuer la requête suivante :
 
 ***Entrée*** :
 ```js
@@ -198,7 +198,7 @@ db.salles.find(
 )
 ```
 
-Nous utilisons une `regex` dans le filtre de `find()`  afin de récupérer tout les documents qui possède `84` dans leur champ `adresse.codePostal` et une `capacite` inférieur à `500`.
+Nous utilisons une `regex` dans le filtre de la fonction `find()`  afin de récupérer tous les documents qui possèdent `84` dans leurs champ `adresse.codePostal` et une `capacite` inférieur à `500`.
 
 ***Sortie*** : 
 
@@ -211,7 +211,7 @@ Nous utilisons une `regex` dans le filtre de `find()`  afin de récupérer tout 
 
 #### Affichez l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent.
 
-Pour affichez l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent, il faut effectuer la requête suivante :
+Pour afficher l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent, il faut effectuer la requête suivante :
 
 ***Entrée*** :
 ```js
@@ -225,7 +225,7 @@ db.salles.find(
 )
 ```
 
-La particularité de cette requête est l'utilisation d'un `or` qui permet de filtrer soit par une `identifiant` pair ou bien par le champ `avis` vide.
+La particularité de cette requête est l'utilisation d'un `$or` qui permet de filtrer soit par une `identifiant pair` ou bien par le champ `avis` vide.
 
 ***Sortie*** : 
 ```js
@@ -237,7 +237,7 @@ La particularité de cette requête est l'utilisation d'un `or` qui permet de fi
 
 #### Affichez le nom des salles dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus).
 
-Pour affichez le nom des salles dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus), il faut effectuer la requête suivante :
+Pour afficher le nom des salles, dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus), il faut effectuer la requête suivante :
 
 ***Entrée*** :
 ```js
@@ -251,7 +251,8 @@ db.salles.find(
 )
 ```
 
-Cette requête filtre les documents dont leur 
+Dans cette requête, nous appliquons un filtre sur le champ du tableau `avis.note` afin d'afficher les documents ayant au moins un des avis comportant une note comprise entre 8 et 10 grâce aux opérateurs `$gte` (supérieur ou egal à) et `$lte` (inférieur ou égal à).
+
 ***Sortie*** : 
 ```js
 {  _id: 1,  nom: 'AJMI Jazz Club'}
@@ -262,7 +263,7 @@ Cette requête filtre les documents dont leur
 
 #### Affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019 (pensez à utiliser le type JavaScript Date).
 
-Pour affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019, il faut effectuer la requête suivante en utilisant la fonction Date() de js :
+Pour afficher le nom des salles, dont au moins un des avis comporte une date postérieure au 15/11/2019, il faut effectuer la requête suivante en utilisant la fonction Date() de js :
 
 ***entrée*** :
 ```js
@@ -276,11 +277,13 @@ db.salles.find(
 )
 ```
 
+Cette requête filtre les documents possédant le champ du tableau `avis.date` qui possède une date inférieure au 15/11/2019. L'opérateur `$lt` permet le filtre `inférieur strictement à`.
+
 # Exercice 11
 
 #### Affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité.
 
-Pour affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité, il faut effectuer la requête suivante :
+Pour afficher le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité, il faut effectuer la requête suivante :
 
 ***Entrée*** :
 ```js
@@ -299,11 +302,13 @@ db.salles.find(
 )
 ```
 
+La requête permet une multiplication par 100 du champ `_id` avec l'opérateur `$multiply` dans l'opérateur `$expr` permettant l'utilisation d'expression et affiche les champs `nom` et `capacite` des documents ayant rempli les conditions. 
+
 # Exercice 12
 
 #### Affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents en utilisant l’opérateur $where qui permet de faire usage de JavaScript.
 
-Pour affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents, il faut effectuer la requête suivante :
+Pour afficher le nom des salles de type SMAC programmant plus de deux styles de musique différents, il faut effectuer la requête suivante :
 
 ***Entrée*** :
 ```js
@@ -319,11 +324,13 @@ db.salles.find(
 )
 ```
 
+La requête permet avec l'utilisation de l'opérateur `$where` de réaliser une expression en javascript. La requête retourne les documents ayant le champ smac à true et possédant plus de deux styles de musique différents.
+
 # Exercice 13
 
 #### Affichez les différents codes postaux présents dans les documents de la collection salles.
 
-Pour affichez les différents codes postaux présents dans les documents de la collection salles, il faut effectuer la requête suivante :
+Pour afficher les différents codes postaux présents dans les documents de la collection salles, il faut effectuer la requête suivante :
 
 ***Entrée*** :
 ```js
@@ -337,6 +344,8 @@ db.salles.find(
 	}
 )
 ```
+
+La requête filtre si le champ du tableau `adresse.codePostal` existe, si oui, elle affiche le code postal.
 
 ***Sortie*** :
 ```js
@@ -354,8 +363,25 @@ Pour mettre à jour tous les documents de la collection salles en rajoutant 100 
 ***Entrée***
 ```js
 db.salles.updateMany(
+	{},
 	{
-		"capacite": {$exists:1}
+		$inc: {"capacite": 100}
+	}
+)
+```
+
+La requête incrémente de 100 le champ `capacite` grâce à la fonction updateMany() et l'opérateur `$inc`. 
+
+La fonction `updateToMany()` met à jour tous les documents qui correspondent au filtre spécifié pour une collection.
+
+L'opérateur `$inc` incrémente un champ d'une valeur spécifiée.
+
+Si nous voulions incrémenter uniquement les salles qui possède le champ `capacite` nous aurions pu réaliser la requête suivante :
+
+```js
+db.salles.updateMany(
+	{
+		"capacite": { $exists:1}
 	},
 	{
 		$inc: {"capacite": 100}
@@ -363,11 +389,12 @@ db.salles.updateMany(
 )
 ```
 
+
 # Exercice 15
 
 #### Ajoutez le style « jazz » à toutes les salles qui n’en programment pas.
 
-Pour ajoutez le style « jazz » à toutes les salles qui n’en programment pas,  il faut effectuer la requête suivante avec l'opérateur `$addToSet` qui ajoute si le style `jazz` n'est pas déja présent dans le document.
+Pour ajouter le style `jazz` à toutes les salles qui n’en programment pas,  il faut effectuer la requête suivante avec l'opérateur `$addToSet` qui ajoute si le style `jazz` n'est pas déjà présent dans le document.
 
 ***Entrée***
 ```js
@@ -381,11 +408,12 @@ db.salles.updateMany(
 )
 ```
 
+
 # Exercice 16
 
 #### Retirez le style «funk» à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3.
 
-Pour retirez le style «funk» à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3, il faut effectuer la requête suivante :
+Pour retirer le style `funk` à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3, il faut effectuer la requête suivante :
 
 ***Entrée***
 ```js
@@ -400,11 +428,13 @@ db.salles.updateMany(
 )
 ```
 
+L'opérateur `$pull` permet la suppression de toutes les instances d'une valeur ou de valeurs qui correspondent à une condition spécifiée d'un tableau existant.
+
 # Exercice 17
 
 #### Ajoutez un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3.
 
-Pour ajoutez un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3, il faut effectuer la requête suivante :
+Pour ajouter un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3, il faut effectuer la requête suivante :
 
 ***Entrée***
 ```js
@@ -419,11 +449,13 @@ db.salles.updateMany(
 )
 ```
 
+L'opérateur `$addToSet` ajoute une valeur à un tableau sauf si la valeur est déjà présente. Si celle-ci existe déjà, il ne fait rien à ce tableau.
+
 # Exercice 18
 
 #### Pour les salles dont le nom commence par la lettre P (majuscule ou minuscule), augmentez la capacité de 150 places et rajoutez un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 ».
 
-Pour ajouter 150 places et un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 » pour toutes les salles dont le nom commence par la lettre p/P, il faut réaliser la requête suivante :
+Pour ajouter 150 places et un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé téléphone dont la valeur sera « 04 11 94 00 10 » pour toutes les salles dont le nom commence par la lettre p/P, il faut réaliser la requête suivante :
 
 ***Entrée***
 ```js
@@ -433,10 +465,12 @@ db.salles.updateMany(
 	},
 	{
 		$inc: {"capacite": 150},
-			$set: {	"contact": [{"telephone": "0411940010"}] }
+			$addToSet: {	"contact": [{"telephone": "00411940010"}] }
 	}
 )
 ```
+
+L'opérateur `regex` fournit des fonctionnalités d'expression régulière pour les _chaînes_ de correspondance de modèles dans les requêtes. Dans notre cas, il permet le filtre de tous les documents ayant le nom de la salle commençant par `p` ou `P`.
 
 # Exercice 19
 
@@ -449,7 +483,7 @@ db.salles.updateMany(
 		"nom": { $regex: "[^aeiou]+$" }
 	},
 	{
-		$addToSet: { 
+		$set: { 
 						"avis": [{"date": new Date(), "note": 10}]
 					}
 	}
@@ -473,7 +507,7 @@ db.salles.updateMany(
 				"capacite": Int32("50"),
 				"smac": "false",
 				"id":{
-		"bsonType": "objectId"
+				"bsonType": "objectId"
 		}
 			}
 	},
@@ -482,6 +516,8 @@ db.salles.updateMany(
 	}
 )
 ```
+
+Le paramètre `upsert` de la fonction `updateToMany()` permet si il est à `true` la mise à jour et l'insertion si la valeur spécifiée n'existe pas.
 
 # Exercice 21
 
@@ -500,6 +536,10 @@ db.salles.find
 ).count()
 ```
 
+L'opérateur `$type` sélectionne les documents où la ***valeur*** du champ est une instance du ou des types BSON spécifiés.
+
+La fonction `count()` renvoie le nombre de documents qui correspondraient à notre fonction `find()` sur la collection salles.
+
 # Exercice 22
 
 #### Pour les documents dont le champ _id n’est pas de type « objectId », affichez le nom de la salle ayant la plus grande capacité. Pour y parvenir, vous effectuerez un tri dans l’ordre qui convient tout en limitant le nombre de documents affichés pour ne retourner que celui qui comporte la capacité maximale.
@@ -516,6 +556,12 @@ db.salles.find
 	}
 ).sort({"capacite":-1}).limit(1)
 ```
+
+L'opérateur `$not` effectue une opération logique ***NOT*** sur l'expression spécifié et sélectionne les documents qui ne correspondent pas.
+
+La fonction `.sort()` permet de spécifier l'ordre dans lequel la requête renvoie les documents correspondants. 
+
+La fonction `.limit` permet de spécifier le nombre maximum de documents que le curseur renverra.
 
 # Exercice 23
 
@@ -535,6 +581,8 @@ db.salles.updateOne
 )
 ```
 
+L'opérateur `$unset`  supprime le/les champ(s) qui lui est/sont spécifié.
+
 # Exercice 24
 
 #### Effectuez la suppression d’un seul document avec les critères suivants : le champ _id est de type « objectId » et la capacité de la salle est inférieure ou égale à 60 personnes.
@@ -549,6 +597,8 @@ db.salles.deleteOne
 	}
 )
 ```
+
+La fonction `deleteOne()` et sa variante `deleteMany()` permet de supprimer un ou plusieurs documents d'une collection.
 
 # Exercice 25
 
@@ -566,3 +616,5 @@ db.salles.updateOne
 	}
 )
 ```
+
+La fonction `updateOne` met à jour un seul document dans la collection en fonction du filtre.
