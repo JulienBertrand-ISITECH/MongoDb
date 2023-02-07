@@ -333,9 +333,9 @@ db.salles.find(
 {  adresse: {    codePostal: '84250'  }}
 ```
 
-Exercice 14
+# Exercice 14
 
-Mettez à jour tous les documents de la collection salles en rajoutant 100 personnes à leur capacité actuelle.
+#### Mettez à jour tous les documents de la collection salles en rajoutant 100 personnes à leur capacité actuelle.
 
 Pour mettre à jour tous les documents de la collection salles en rajoutant 100 personnes à leur capacité actuelle, il faut effectuer la requête suivante :
 
@@ -351,11 +351,11 @@ db.salles.updateMany(
 )
 ```
 
-Exercice 15
+# Exercice 15
 
-Ajoutez le style « jazz » à toutes les salles qui n’en programment pas.
+#### Ajoutez le style « jazz » à toutes les salles qui n’en programment pas.
 
-Pour ajoutez le style « jazz » à toutes les salles qui n’en programment pas,  il faut effectuer la requête suivante avec l'opérateur `$addToSet`
+Pour ajoutez le style « jazz » à toutes les salles qui n’en programment pas,  il faut effectuer la requête suivante avec l'opérateur `$addToSet` qui ajoute si le style `jazz` n'est pas déja présent dans le document.
 
 ***Entrée***
 ```js
@@ -383,43 +383,174 @@ db.salles.updateMany(
 		_id: {$nin: [2,3]}
 	},
 	{
-		$push: {"styles": "jazz"}
+		$pull: {"styles": "funk"}
 	}
 )
 ```
 
-Exercice 17
+# Exercice 17
 
-Ajoutez un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3.
+#### Ajoutez un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3.
 
-Exercice 18
+Pour ajoutez un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3, il faut effectuer la requête suivante :
 
-Pour les salles dont le nom commence par la lettre P (majuscule ou minuscule), augmentez la capacité de 150 places et rajoutez un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 ».
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"styles": {$exists:1},
+		_id: {$in: [3]}
+	},
+	{
+		$addToSet: {"styles": ["techno", "reggae" ]}
+	}
+)
+```
 
-Exercice 19
+# Exercice 18
 
-Pour les salles dont le nom commence par une voyelle (peu importe la casse, là aussi), rajoutez dans le tableau avis un document composé du champ date valant la date courante et du champ note valant 10 (double ou entier). L’expression régulière pour chercher une chaîne de caractères débutant par une voyelle suivie de n’importe quoi d’autre est [^aeiou]+$.
+#### Pour les salles dont le nom commence par la lettre P (majuscule ou minuscule), augmentez la capacité de 150 places et rajoutez un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 ».
 
-Exercice 20
+Pour ajouter 150 places et un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 » pour toutes les salles dont le nom commence par la lettre p/P, il faut réaliser la requête suivante :
 
-En mode upsert, vous mettrez à jour tous les documents dont le nom commence par un z ou un Z en leur affectant comme nom « Pub Z », comme valeur du champ capacite 50 personnes (type entier et non décimal) et en positionnant le champ booléen smac à la valeur « false ».
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"nom": { $regex: "^[Pp]" }
+	},
+	{
+		$inc: {"capacite": 150},
+			$set: {	"contact": [{"telephone": "0411940010"}] }
+	}
+)
+```
 
-Exercice 21
+# Exercice 19
 
-Affichez le décompte des documents pour lesquels le champ _id est de type « objectId ».
+#### Pour les salles dont le nom commence par une voyelle (peu importe la casse, là aussi), rajoutez dans le tableau avis un document composé du champ date valant la date courante et du champ note valant 10 (double ou entier). L’expression régulière pour chercher une chaîne de caractères débutant par une voyelle suivie de n’importe quoi d’autre est [^aeiou]+$.
 
-Exercice 22
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"nom": { $regex: "[^aeiou]+$" }
+	},
+	{
+		$addToSet: { 
+						"avis": [{"date": new Date(), "note": 10}]
+					}
+	}
+)
+```
 
-Pour les documents dont le champ _id n’est pas de type « objectId », affichez le nom de la salle ayant la plus grande capacité. Pour y parvenir, vous effectuerez un tri dans l’ordre qui convient tout en limitant le nombre de documents affichés pour ne retourner que celui qui comporte la capacité maximale.
+# Exercice 20
 
-Exercice 23
+#### En mode upsert, vous mettrez à jour tous les documents dont le nom commence par un z ou un Z en leur affectant comme nom « Pub Z », comme valeur du champ capacite 50 personnes (type entier et non décimal) et en positionnant le champ booléen smac à la valeur « false ».
 
-Remplacez, sur la base de la valeur de son champ _id, le document créé à l’exercice 20 par un document contenant seulement le nom préexistant et la capacité, que vous monterez à 60 personnes.
+***Entrée***
+```js
+db.salles.updateMany(
+	{
+		"nom": { $regex: "^[Zz]" }
+	},
+	{
+		$set: 
+			{
+				"nom": "Pub Z",
+				"capacite": Int32("50"),
+				"smac": "false",
+				"id":{
+		"bsonType": "objectId"
+		}
+			}
+	},
+	{
+		"upsert": true
+	}
+)
+```
 
-Exercice 24
+# Exercice 21
 
-Effectuez la suppression d’un seul document avec les critères suivants : le champ _id est de type « objectId » et la capacité de la salle est inférieure ou égale à 60 personnes.
+#### Affichez le décompte des documents pour lesquels le champ _id est de type « objectId ».
 
-Exercice 25
+***Entrée***
+```js
+db.salles.find
+(
+	{
+		"_id": 
+			{
+				$type: ["objectId"]
+			}
+	}
+).count()
+```
 
-À l’aide de la méthode permettant de trouver un seul document et de le mettre à jour en même temps, réduisez de 15 personnes la capacité de la salle située à Nîmes.
+# Exercice 22
+
+#### Pour les documents dont le champ _id n’est pas de type « objectId », affichez le nom de la salle ayant la plus grande capacité. Pour y parvenir, vous effectuerez un tri dans l’ordre qui convient tout en limitant le nombre de documents affichés pour ne retourner que celui qui comporte la capacité maximale.
+
+***Entrée***
+```js
+db.salles.find
+(
+	{
+		"_id":
+			{
+				$not:{ $type: ["objectId"] }
+			}
+	}
+).sort({"capacite":-1}).limit(1)
+```
+
+# Exercice 23
+
+#### Remplacez, sur la base de la valeur de son champ _id, le document créé à l’exercice 20 par un document contenant seulement le nom préexistant et la capacité, que vous monterez à 60 personnes.
+
+***Entrée***
+```js
+db.salles.updateOne
+(
+	{
+		"_id": ObjectId("63e266882445e89cf656627d")
+	},
+	{
+		$unset: { smac: "" },
+		$inc: { "capacite": 10}
+	}
+)
+```
+
+# Exercice 24
+
+#### Effectuez la suppression d’un seul document avec les critères suivants : le champ _id est de type « objectId » et la capacité de la salle est inférieure ou égale à 60 personnes.
+
+***Entrée***
+```js
+db.salles.deleteOne
+(
+	{
+		"_id": ObjectId("63e266882445e89cf656627d"),
+		"capacite": {$lte: 60}
+	}
+)
+```
+
+# Exercice 25
+
+#### À l’aide de la méthode permettant de trouver un seul document et de le mettre à jour en même temps, réduisez de 15 personnes la capacité de la salle située à Nîmes.
+
+***Entrée***
+```js
+db.salles.updateOne
+(
+	{
+		"adresse.ville": {$eq: "Nîmes"}
+	},
+	{
+		$inc: { "capacite": -15}
+	}
+)
+```

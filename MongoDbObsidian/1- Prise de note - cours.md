@@ -507,3 +507,50 @@ db.eleves.find({ "notes": { $elemMatch :  { $gt: 0, $lt: 10} }})
 db.eleves.find({ "notes" : { $all : [5, 7.50] } }) // Ne retourne que les élèves qui ont eu 5 et 7.5. Ca agit comme un && logique.
 
 ```
+
+#### Les tableaux de documents
+
+Renvoyer les documents dont les élèves ont au moins une note à 10.
+```js
+db.eleves.find({"notes.note": 10})
+```
+
+Renvoyer les documents dont les élèves ont au moins une note entre 10 et 15 dans une matière quelqconque :
+
+```js
+// Retourne si les deux conditions sont remplis.
+db.eleves.find(
+	{
+		"notes": 
+		{
+			$elemMatch: 
+			{
+				"note": { $gt: 10, $lte: 15 }
+			}
+		}
+	}
+)
+
+// Retourne si au moin une condition est remplit.
+db.eleves.find(
+	{
+		"notes.note": {$gt: 10, $lte: 15}
+	}
+)
+
+//Affiche les élèves qui ont eu moins de 10 en Mathémtique.
+db.eleves.find(
+	{
+		"notes.0.note": {$lt: 10}
+	}
+)
+```
+
+#### Le trie
+
+[Lien de la doc officiel](https://www.mongodb.com/docs/manual/reference/method/cursor.sort/)
+
+```js
+curseur.sort(<tri>)
+
+```
