@@ -114,10 +114,13 @@ Pour afficher l'identifiant des salles pour lesquelles le champ adresse ne compo
 db.salles.find({"adresse.numero": null}, {"_id":1})
 ```
 
+Nous filtrons sur le champ `adresse.numero` si vide et affichons les `id` qui ont la condition valide.
+
 ***Sortie*** :
 ```js
 {  _id: 3}
 ```
+
 
 # Exercice 4
 
@@ -129,6 +132,8 @@ Pour afficher l'identifiant puis le nom des salles qui ont exactement un avis, i
 ```js
 db.salles.find({avis: { $size:1}}, {_id:1, nom:1})
 ```
+
+Nous filtrons sur le tableau `avis` dont la taille de celui-ci est de 1 et nous affichons les documents remplissant cette condition en affichant uniquement l'`id` et le `nom`.
 
 ***Sortie***
 ```js
@@ -166,6 +171,8 @@ Pour affichez tous les styles musicaux des salles qui ont le style « blues » e
 db.salles.find({"styles.0":"blues"}, { _id:0, nom:1, styles:1 })
 ```
 
+Nous filtrons sur la premiere valeur du champ `styles` et retournons tout les documents remplissant cette condition en affichant le `nom` et le `style`.
+
 ***Sortie*** : 
 ```js
 {  nom: 'Sonograf',  styles: [    'blues',    'rock'  ]}
@@ -190,6 +197,8 @@ db.salles.find(
 	}
 )
 ```
+
+Nous utilisons une `regex` dans le filtre de `find()`  afin de récupérer tout les documents qui possède `84` dans leur champ `adresse.codePostal` et une `capacite` inférieur à `500`.
 
 ***Sortie*** : 
 
@@ -216,6 +225,8 @@ db.salles.find(
 )
 ```
 
+La particularité de cette requête est l'utilisation d'un `or` qui permet de filtrer soit par une `identifiant` pair ou bien par le champ `avis` vide.
+
 ***Sortie*** : 
 ```js
 {  _id: 2}
@@ -240,6 +251,7 @@ db.salles.find(
 )
 ```
 
+Cette requête filtre les documents dont leur 
 ***Sortie*** : 
 ```js
 {  _id: 1,  nom: 'AJMI Jazz Club'}
