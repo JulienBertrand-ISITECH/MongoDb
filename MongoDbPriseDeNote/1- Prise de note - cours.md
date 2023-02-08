@@ -1023,3 +1023,75 @@ db.achats.aggregate(
 	]
 )
 ```
+
+##### L'opérateur `$group`
+
+```js
+{
+	$group: {
+		"_id": <expression>,
+		<champ>: { <operateur d'accumulation>}
+	}
+}
+```
+
+Opérateur d'accumulation: `$push`, `$sum`, `$avg`, `$min`, `$max`
+
+Exemple d'utilisation :
+```js
+var pipeline = [
+	{
+	//group par age et affiche le nombre de personne par section d'age
+		$group: {
+			"_id": "$age",
+			"nombre_personne": { $sum: 1}
+		}
+	},
+	{
+	//permet de trier
+		$sort: {
+			"nombre_personne": 1
+		}
+	}
+
+]
+
+db.personnes.aggregate(pipeline)
+
+//Fait la même chose que plus haut
+db.personnes.aggregate([
+{
+	$sortByCount: "$age"
+}
+])
+
+//Affiche le nombre de personne
+var pipeline = [{
+	$group: {
+		"_id": null,
+		"nombre_personnes": { $sum: 1}}
+}]
+db.personnes.aggregate(pipeline)
+
+
+var pipeline = [{
+	$match: {
+		"age": { $exists: true}
+	},
+	},
+{
+	$group: {
+		"_id": null,
+		"avg": { $avg: "$age"}
+	}
+},
+	{
+		$project: {
+			"_id": 0,
+			"Age_moyen"{
+				$ceil: '$avg'
+			}
+		}
+	}
+}]
+```

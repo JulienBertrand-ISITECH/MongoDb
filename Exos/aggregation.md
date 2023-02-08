@@ -81,32 +81,114 @@ db.salles.aggregate(pipeline)
 ## Écrivez le pipeline qui affichera, pour chaque style musical, le nombre de salles le programmant. Ces styles seront classés par ordre alphabétique.
 
 ```js
-var pipeline = [
-	{
-			$group:
-			{
-				[id:"$styles",
-				styles: {$sum:1}]
-			}
-	},
-	{
-		$project: {
-			"_id": 1
-		}
-	}
-] 
 
-db.salles.aggregate(pipeline) 
+var pipeline = [  
+{ $unwind: "$styles" },
+{ 
+	$group: { 
+		_id: "$styles", 
+		count: { $sum: 1 } } 
+	}, 
+	{ 
+		$sort: { _id: 1 } 
+	}, 
+	{ 
+		$project: { 
+			style_musical: "$_id", 
+			nombre_de_salles: "$count", 
+			_id: 0 
+	} 
+}
+]
+db.salles.aggregate(pipeline)
 ```
 
-Exercice 5
+Cette pipeline utilise l'opérateur `$unwind` pour décomposer le tableau `styles` dans les documents de la collection `salles` permettant de compter le nombre de salles pour chaque style indépendament.
 
-À l’aide des buckets, comptez les salles en fonction de leur capacité :
+# Exercice 5
+
+## À l’aide des buckets, comptez les salles en fonction de leur capacité :
 
 celles de 100 à 500 places
+```js
+var pipeline = [
+	{ 
+		$bucket: { 
+			groupBy: "$capacite", 
+			boundaries: [100, 500],
+				default: "Autre salles ayant une capacite inférieur ou supérieur", 
+			output: { 
+				count: { $sum: 1 } 
+			} 
+		} 
+	}
+]
+
+db.salles.aggregate(pipeline)
+```
+Ce pipeline utilise l'opération `$bucket` pour regrouper les documents en fonction de la capacité, définie dans le champ `capacite`. Les limites sont définies dans le tableau `boundaries`, et les salles seront regroupées en fonction de leur capacité (supérieure à 100 et inférieure ou égale à 500). Toutes les salles dont la capacité n'entre pas dans les limites définies dans le tableau `boundaries` seront regroupées dans la catégorie `Autre salles ayant une capacite inférieur ou supérieur`. L'opération `$sum` est utilisée pour compter le nombre de documents dans chaque groupe, et l'opération `$sort` trie les groupes par ordre croissant de capacité.
 
 celles de 500 à 5000 places
+```js
+var pipeline = [
+	{ 
+		$bucket: { 
+			groupBy: "$capacite", 
+			boundaries: [500, 5000],
+				default: "Autre salles ayant une capacite inférieur ou supérieur", 
+			output: { 
+				count: { $sum: 1 } 
+			} 
+		} 
+	}
+]
+
+db.salles.aggregate(pipeline)
+```
+Ce pipeline utilise l'opération `$bucket` pour regrouper les documents en fonction de la capacité, définie dans le champ `capacite`. Les limites sont définies dans le tableau `boundaries`, et les salles seront regroupées en fonction de leur capacité (supérieure à 500 et inférieure ou égale à 5000). Toutes les salles dont la capacité n'entre pas dans les limites définies dans le tableau `boundaries` seront regroupées dans la catégorie `Autre salles ayant une capacite inférieur ou supérieur`. L'opération `$sum` est utilisée pour compter le nombre de documents dans chaque groupe, et l'opération `$sort` trie les groupes par ordre croissant de capacité.
 
 Exercice 6
 
 Écrivez le pipeline qui affichera le nom des salles ainsi qu’un tableau nommé avis_excellents qui contiendra uniquement les avis dont la note est de 10.
+
+```js
+var pipeline = [
+  {
+    $unwind: "$avis"
+  },
+  {
+    $group: {
+      _id: "$nom",
+      avis_excellents: { 
+        $push: {
+          $cond: [
+            { $eq: ["$avis.note", 10] },
+            "$avis",
+            null
+          ]
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      nom: "$_id",
+      avis_excellents: {
+        $filter: {
+          input: "$avis_excellents",
+          as: "avis",
+          cond: { $ne: ["$$avis", null] }
+        }
+      }
+    }
+  }
+];
+
+db.salles.aggregate(pipeline);
+
+```
+
+Cette pipeline utilise les opérations suivantes :
+- `$cond` : Dans notre cas, l'opérateur évalue l'expression boolean `$eq: ["$avis.note", 10]`, si il y a une note à 10 alors on retourne la note, sinon, il retourne `null`.
+- `$filter` : Dans notre cas, l'opérateur prend 
