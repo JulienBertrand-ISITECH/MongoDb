@@ -34,7 +34,7 @@ db.runCommand(
 			{ "$jsonSchema": 
 				{ 
 					"bsonType": "object",
-					"required": ["nom", "capacite", "adresse.codePostal", "adresse.ville"],
+					"required": ["nom", "capacite", "adresse.codePostal", "adresse.ville", ],
 					"properties": proprietes
 				}
 			}
@@ -134,6 +134,21 @@ var proprietes = {
 }
 ```
 
+```js
+db.runCommand( 
+	{ 
+		"collMod": "salles", 
+		"validator": 
+			{ "$jsonSchema": 
+				{ 
+					"bsonType": "object",
+					"required": ["nom", "capacite", "adresse.codePostal", "adresse.ville", ],
+					"properties": proprietes
+				}
+			}
+	}
+)
+```
 
 ## Que se passe-t-il si vous tentez de mettre à jour l’ensemble des documents existants dans la collection à l’aide de la requête suivante :
 
@@ -189,7 +204,6 @@ Additional information:
 
 ```
 
-
 ## Supprimez les critères rajoutés à l’aide de la méthode delete en JavaScript
 
 ### Reponse
@@ -203,13 +217,55 @@ db.salles.updateMany(
 )
 ```
 
-Exercice 3
+# Exercice 3
 
-Rajoutez aux critères de validation existants le critère suivant :
+## Rajoutez aux critères de validation existants le critère suivant :
 
 Le champ smac doit être présent OU les styles musicaux doivent figurer parmi les suivants : "jazz", "soul", "funk" et "blues".
 
-Que se passe-t-il lorsque nous exécutons la mise à jour suivante ?
+```js
+var proprietes = {
+	"nom": {
+		"bsonType": "string",
+		"description": "Chaine de caractères + expr régulière - obligatoire" },
+		"capacite": { 
+			"bsonType": "int",
+			"description": "Integer - obligatoire" },
+			"smac": { 
+				"bsonType": [ "string", "null"],
+				"enum": [ "jazz", "soul", "funk", "blues"],
+				"description": "Doit être présent ou parmi les styles musicaux suivants : jazz, soul, funk, blues - facultatif" },
+			"adresse.codePostal": {
+				"bsonType": "string",
+				"description": "Chaine de caractères + expr régulière - obligatoire"},
+			"adresse.ville": { 
+				"bsonType": "string",
+				"description": "Chaine de caractères + expr régulière - obligatoire"}
+	}
+```
 
+```js
+db.runCommand( 
+	{ 
+		"collMod": "salles", 
+		"validator": 
+			{ "$jsonSchema": 
+				{ 
+					"bsonType": "object",
+					"required": ["nom", "capacite", "adresse.codePostal", "adresse.ville", "smac"],
+					"properties": proprietes
+				}
+			}
+	}
+)
+```
+
+## Que se passe-t-il lorsque nous exécutons la mise à jour suivante ?
 
 db.salles.update({"_id": 3}, {$set: {"verifie": false}}) 
+
+### Reponse
+
+Lorsque nous exécutons la requête, nous mettons à jour le document possédant l'id 3 de la collection salles.
+
+Le schéma de validation étant validé, le champ `verifie` avec sa valeur `false` sont ajouté.
