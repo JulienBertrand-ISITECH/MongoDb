@@ -476,7 +476,7 @@ Exemple :
 db.hobbies.updateOne( {_id:1}, {$addToSet: {passions: "streetFighter"}})
 ```
 
-#### Question :
+##### Question :
 ```js
 db.personnes.find({interets:"jardinage"})
 
@@ -497,7 +497,7 @@ db.personnes.find({ "interets": {$size: 2} })
 db.personnes.find({ "interets.1": {$exists:1} })
 ```
 
-#### L'opérateur `$elemMatch`
+##### L'opérateur `$elemMatch`
 
 [Lien vers la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/)
 
@@ -546,11 +546,480 @@ db.eleves.find(
 )
 ```
 
-#### Le trie
+##### Le trie
 
 [Lien de la doc officiel](https://www.mongodb.com/docs/manual/reference/method/cursor.sort/)
 
 ```js
 curseur.sort(<tri>)
 
+```
+
+
+
+
+#### Les index
+[Lien de la doc officiel](https://www.mongodb.com/docs/manual/indexes/)
+
+Les index prennent en charge l'exécution efficace des requêtes dans MongoDB. Sans index, MongoDB doit effectuer une _analyse de collection_ , c'est-à-dire analyser chaque document d'une collection, pour sélectionner les documents qui correspondent à l'instruction de requête. Si un index approprié existe pour une requête, MongoDB peut utiliser l'index pour limiter le nombre de documents qu'il doit inspecter.
+
+Les index sont des structures de données spéciales qui stockent une petite partie de l'ensemble de données de la collection sous une forme facile à parcourir. L'index stocke la valeur d'un champ spécifique ou d'un ensemble de champs, triés par la valeur du champ. L'ordre des entrées d'index prend en charge des correspondances d'égalité efficaces et des opérations de requête basées sur des plages. De plus, MongoDB peut renvoyer des résultats triés en utilisant l'ordre dans l'index.
+
+Le schéma suivant illustre une requête qui sélectionne et ordonne les documents correspondants à l'aide d'un index :
+
+![Schéma d'une requête qui utilise un index pour sélectionner et renvoyer des résultats triés.  L'index stocke les valeurs de ``score`` dans l'ordre croissant.  MongoDB peut parcourir l'index dans l'ordre croissant ou décroissant pour renvoyer des résultats triés.](https://www.mongodb.com/docs/manual/images/index-for-sort.bakedsvg.svg)
+***Avantage*** : Le temps de recherche est réduit.
+***Inconvénient*** : Augmente le temps d'écriture.
+
+On indexe en priorité les champs courrant utilisé dans notre application.
+
+La nature de votre application devra impacter votre logique d'indexation : 
+- Est-elle orienté écriture (write-heavy) ?
+- Est-elle orienté lecture (read-heavy) ?
+
+Montrer deux requetes : une sans indexation et une avec et comment les mettre en place.
+[doc getIndex](https://www.mongodb.com/docs/manual/reference/method/db.collection.getIndexes/)
+[doc createIndex](https://www.geeksforgeeks.org/mongodb-db-collection-createindex-method/#:~:text=The%20indexes%20are%20ordered%20by,index%2C%202d%20index%2C%20etc.)
+[doc dropIndex()](https://www.mongodb.com/docs/manual/reference/method/db.collection.dropIndex/)
+
+```js
+db.collection.createIndex(<champ + type>, <option?>)
+
+db.personnes.createIndex({"age": -1})
+
+{
+	"createdCollectionAutomatically": false,
+	"numIndexesBefore": 1,
+	..
+	ok:1
+}
+
+// Affiche un tableau avec les détails d'un indexe
+db.personnes.getIndexes()
+
+// Suprime un index
+db.personnes.dropIndex("age_-1")
+
+// Crée un index avec un nom et une collation
+db.personnes.createIndex({"age": -1}, {"name": "index_age", "background": true}, {"collation": {"locale": "fr"}})
+
+
+
+
+```
+
+Un indexe peut porter sur plusieurs champs, cela s'apelle un ***indexe composé***.
+
+L'ordre dans lequels les champs sont énuméré est très important.
+
+La suppression d'index et la création d'index peut avoir un impacte très négatif. Une procédure de création/suppression doit se faire lors d'une maintenance.
+
+```js
+// Exemple d'une requête avec indexe composé (age et nom)
+db.personnes.createIndex(
+	{
+		"age": -1, "nom":1
+	},
+	{
+		"name": "idx_age_nom",
+		collation: {local:"fr"} 
+	}
+)
+```
+
+MongoDB permet l'utilisation de deux types d'index qui permettent de gérer les requêtes geospatiales :
+- Les index de type `2dsphere` sont utilisés par des des requêtes geospatiales intervenant sur une surface spherique.
+- Le sindex `2d` concernent des requêtes intervenant sur un plan Euclidien.
+
+Pour un champ nommé `donneesSpatiales` d'une collection `cartographie` vous pouvez par exemple créer un index de tpe `2d` avec la commande :
+
+```js
+db.cartographie.createIndex({ "donneesSpatiales": "2d" })
+```
+
+Pour la création d'un index `2dsphere` on utilisera plûtot :
+```js
+db.cartographie.createIndex({ "donneesSpatiales": "2dsphere" })
+```
+
+Les index `2d` font intervenir des coordonnées de type `legacy`  permettent de travailler avec des absysses et des ordonnées.
+
+*A RETENIR l'ordre : longétude/latitude*
+
+```js
+db.plan.insertIne({ "nom": "firstPoint", "geodata": [1,1] })
+
+db.plan.insertOne({ "nom": "firstPoint_bis", "geodata": [4.7, 44.5] })
+
+db.plan.insertOne({ "nom": "firstPoint_bis", "geodata": "lon": 4.7, "lat": 44.5 })
+```
+
+#### geoJson
+
+[Lien de la doc officiel](https://www.mongodb.com/docs/manual/reference/geojson/)
+
+```js
+{ type: <type d'objet>, coordinates: <coordonnees>}
+```
+
+##### Le type Point
+
+```js
+"type": "Point",
+"coordinates": [ 14.0, 1.0 ]
+```
+
+##### Le type MultiPoint
+
+```js
+"type": "Point",
+"coordinates": [ [ 14.0, 1.0 ], [ 13.0, 1.0 ] ]
+```
+
+##### Le type LineString:
+
+```js
+//Permet de matérialiser une ligne
+"type": LineString,
+"coordinates": [
+	[ 14.0, 1.0 ], [ 13.0, 1.0 ]
+]
+```
+
+##### Le type  Polyon
+
+[Lien de la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/polygon/)
+
+```js
+//Permet de matérialiser un polygone (c'est un tableau de tableau de tableau)
+"type": Polygon,
+"coordinates": [
+	[
+		[ 14.0, 1.0 ], [ 13.0, 1.0 ]
+	],
+	[
+		[ 14.0, 1.0 ], [ 13.0, 1.0 ]
+	]
+]
+```
+
+
+```js
+db.avignon.createIndex({"localisation": "2dsphere"})
+db.avignon2s.createIndex({"localisation": "2d"})
+```
+
+##### L'opérateur $nearSphere
+
+[Lien de la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/nearSphere/)
+
+```js
+	$nearSphere: {
+		$geometry: {
+				type: "Point",
+				coordinates: [<longitude>, <latitude>]
+			},
+			$minDistance: <distance en metres>, //optionnel
+			$maxDistance: <distance en metres> // optionnel
+		}
+	}
+	
+	{
+		$nearSphere: [ <x>, <y>],
+		$minDistance: <distance en radian>,
+		$maxDistance: <distance en radian>
+	}
+```
+
+Nativement, `$nearSphere` réalise un tri.
+
+###### Exercice du cours
+```js
+var operaAvignon = { type: "Point", coordinates: [4.81, 43.95] }
+```
+
+Effectuer une requête sur la collection avignon
+
+***Entrée***
+```js
+
+//La requête va retourner les localisation présente du plus proche au plus loin par rapport à notre variable.
+db.avignon.find(
+	{
+		"localisation": {
+			$nearSphere: {
+				$geometry: operaAvignon
+			}
+		}
+	}, {"_id": 0, "nom": 1}
+)
+```
+
+***Sortie***
+```js
+{  nom: 'Collection Lambert'}
+
+{  nom: 'Palais des Papes'}
+
+{  nom: 'Pont Saint-Bénézet'}
+```
+
+##### L'opérateur `$geoWithin`
+[Liende la doc officiel](https://www.mongodb.com/docs/manual/reference/operator/query/geoWithin/)
+Permet de capturer les documents des coordonnées geospatiales sont ......
+Cet opérateur n'effectue aucun tri et ne necessite pas la création d'un index geospatiale, on l'utilise de la manière suivante :
+
+```js
+{
+	<champ des documents contenant les coordonnées> : {
+		$geoWithin: {
+			<opérateur de forme>: <coordonnées>	
+		}
+	}
+}
+```
+
+Création d'un polygone pour notre exemple :
+```js
+var polygone = [
+	[43.9548, 4.80143],
+	[43.95475, 4.80779],
+	[43.95045, 4.81097],
+	[43.4657, 4.80449],
+]
+```
+
+La requête suivante utilise ce polygone :
+```js
+db.avignon2d.find(
+	{
+		"localisation": 
+		{
+			$geoWithin: 
+			{
+				$polygon: polygone
+			}
+		}
+	}, {"_id": 0, "nom": 1}
+)
+```
+
+Signature pour le cas d'utilisation d'objet GeoJSON
+```js
+{
+	<champ des documents contenant les coordonnées> : {
+		$geoWithin: {
+			type: < "Polygon" ou bien "MultiPolygon">,
+			coordinates: [<coordonnees>]
+		}
+	}
+}
+```
+
+```js
+var polygone = [
+	[43.9548, 4.80143],
+	[43.95475, 4.80779],
+	[43.95045, 4.81097],
+	[43.4657, 4.80449],
+	[43.9548, 4.80143]
+]
+
+db.avignon.find(
+{
+	"localisation": 
+	{
+		$geoWithin: 
+		{
+			$geometry: 
+			{
+				type: "Polygon",
+				coordinates: [polygone]
+			}
+		}
+	}
+}, {"_id": 0, "nom": 1}
+)
+```
+
+#### FrameWork d'agregation
+
+MongoDB met a disposition un puissant outil d'analyse et de traitement d'information: le pipeline d'agregation (ou framework).
+Metaphore du tapis roulant d'usine
+
+Méthode utilisée:
+```js
+db.collection.aggregate(pipeline, option)
+```
+
+- Pipeline: Designe un tableau d'étapes
+- options: Désigne un document
+
+Parmis les options, nous retiendrons:
+- collation, permet d'affecter une collation à l'opération d'aggregation
+- bypassDocumentValidation: Fonctionne avec un opérateur appelé `$out` et permet de passer au travers de la validation des documents.
+- allowDiskUse: Donne la possibilité de faire déborder les opérations d'écriture sur le disque.
+
+Vous pouvez appeler aggregate sans argument:
+```js
+db.personnes.aggregate()
+```
+
+Au sein du shell, nous allons créer une variable pipeline :
+```js
+var pipeline = []
+db.personnes.aggregate(pipeline)
+db.personne.aggregate(
+	pipeline,
+	{
+		"collation": {
+			"local": "fr"
+		}
+	}
+)
+```
+
+Le filtrage avec `$match`
+[Liend e la doc](https://www.mongodb.com/docs/manual/reference/operator/aggregation/match/)
+
+Cela permet d'obtenir des pipelines performants avec des temps d'éxécution courts. Normalement, `$match` doit intervenir le plus en amont possible dans le pipeline car `$match` agit comme un filtre en réduisant le nombre de documents à traiter plus en aval dans le pipeline. (Dans l'ideal on devrait le trouver comme premier opérateur)
+
+La syntaxe est la suivante : 
+```js
+{ $match : {<requete>} }
+```
+
+Commençons par la première étape :
+```js
+var pipeline = [{
+	$match : {
+		"interets": "jardinage"
+	},
+	$match: {
+		"nom": /^L/,
+		"age": {$gt:70}
+	}
+}]
+
+db.personnes.aggregate(pipeline)
+```
+
+Sélection/modification de champs : `$project`
+
+[Lien de la doc](https://www.mongodb.com/docs/manual/reference/operator/aggregation/project/)
+
+Syntaxe :
+```js
+{ $project: { <spec> } }
+```
+
+```js
+var pipeline = [
+	{
+		$match : {
+			"interets": "jardinage"
+			}
+	},
+	{
+		$project: {
+			"_id": 0,
+			"nom": 1,
+			"prenom": 1,
+			"super_senior": { $gte: ["$age", 70] }
+		}
+	},
+	{ // retourne ceux qui ont la condition juste après avoir créer la donnée
+		$match: {
+			"super_senior": false
+		}
+	}
+]
+
+db.personnes.aggregate(pipeline)
+```
+
+```js
+var pipeline = [
+	{
+		$match : {
+			"interets": "jardinage"
+			}
+	},
+	{
+		$project: {
+			"_id": 0,
+			"nom": 1,
+			"prenom": 1,
+			"ville": "$adresse.ville"
+		}
+	},
+	{
+		$match: {
+			"ville": {$exists: true}
+		}
+	}
+]
+
+db.personnes.aggregate(pipeline)
+```
+
+##### L'opérateur $addFields
+
+[Lien de la doc](https://www.mongodb.com/docs/manual/reference/operator/aggregation/addFields/)
+
+```js
+ $addField: { <nouveau champ> : <expression>, ...} }
+
+db.personnes.aggregate([
+	{
+		$addFields : {
+			"numero_secu_s" : ""
+		}
+	}
+])
+```
+
+###### Exercice du cours
+```js
+db.achats.insertMany(
+	[
+		{
+			"nom": "Pascal",
+			"prenom": "Léo",
+			"achats": [112.29, 88.36, 72.01],
+			"reductions": [12.30, 2.01]  
+		},
+		{
+			"nom": "Perez",
+			"prenom": "Alex",
+			"achats": [20.01, 296.35],
+			"reductions": [9.91, 0.87]  
+		}
+	]
+)    
+
+db.achats.aggregate(
+	[
+		{
+			$addFields: 
+				{
+					"total_achats": { $sum: "$achats" },
+					"total_reduc": { $sum: "$reductions" }
+				}
+		},
+		{
+			$addFields: {
+				"total_final": { $subtract: [ "$total_achats",  "$total_reduc" ] }
+			}
+		},
+		{
+			$project: {
+				"_id": 0,
+				"nom": 1,
+				"prenom":1,
+				"Total payé": "$total_final"
+			}
+		}
+	]
+)
 ```

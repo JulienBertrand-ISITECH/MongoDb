@@ -164,7 +164,7 @@ Lorsque je tente de mettre à jour l'ensemble des documents existant dans la col
 verifie: true
 ```
 
-Ce champ confirme la validation le respect du schéma de validation.
+Ce champ confirme la validation du respect du schéma de validation.
 
 - Deuxièmement, j'ai un message d'erreur qui est apparut dans la `MONGOSH`. Ce message a été généré, car la requête à rencontrer un document ne respectant pas le schéma de validation.
 

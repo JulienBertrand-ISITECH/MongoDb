@@ -480,7 +480,7 @@ L'opérateur `regex` fournit des fonctionnalités d'expression régulière pour 
 ```js
 db.salles.updateMany(
 	{
-		"nom": { $regex: "[^aeiou]+$" }
+		"nom": { $regex: "^[aeiou]+$" }
 	},
 	{
 		$set: { 
