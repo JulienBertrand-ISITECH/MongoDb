@@ -6,7 +6,7 @@ a. Importez les données de stations météorologiques dans MongoDB en utilisant
 b. Assurez-vous que les données sont bien structurées et propres pour une utilisation ultérieure.
 
 ```
-Pensez à bien configurer les colonnes comme tel :
+Pensez à bien vérifier les types des colonnes  :
 
 Country/Region : string
 Lat : Decimal128
@@ -59,6 +59,8 @@ Requêtes MongoDB:
 a. Recherchez les stations météorologiques qui ont enregistré une température supérieure à 25°C pendant les mois d'été (juin à août). Utilisez la méthode find () et les opérateurs de comparaison pour trouver les documents qui correspondent à vos critères.
 
 Dans un premier temps,  j'ai filtré mes documents sur ceux qui ont une température supérieure à 77° fahrenheit qui est l'équivalent à 25° Celsus grâce à l'opérateur `$gt`. Ensuite, j'ai filtré les dates avec les opérateurs `$gte` et `$lte` et la fonction `ISODate()` où j'y ai passé en paramètre mon intervalle de date. Enfin, je demande à projeter les `stations` grâce à `Country/Region :1` et la température avec `temp: 1` 
+
+***Entrée***
 ```js
 /*
 N'ayant pas de mois en été (uniquement janvier/fevrier/mars), je filtre sur janvier/fevrier
@@ -76,7 +78,6 @@ db.donnees.find({
 		"temp":1
 	}
 )
-
 ```
 
 b. Triez les stations météorologiques par pression atmosphérique, du plus élevé au plus bas. Utilisez la méthode sort () pour trier les résultats.
