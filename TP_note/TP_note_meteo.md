@@ -83,6 +83,8 @@ db.donnees.find({
 b. Triez les stations météorologiques par pression atmosphérique, du plus élevé au plus bas. Utilisez la méthode sort () pour trier les résultats.
 
 Comme précédemment, j'utilise la méthode `find()` sur la collection `donnees` qui fonctionne en filtre/projection et j'utilise la méthode `sort()` qui me permet de trier par ordre croissant décroissant mes projections. Dans notre cas, je lui passe en paramètre `"slp":-1 ` qui signifie que je souhaite un trie par ordre décroissant sur mes pressions atmosphériques.
+
+***Entrée***
 ```js
 db.donnees.find (
 	{
@@ -109,6 +111,8 @@ Afin de pouvoir calculez la température moyenne par station météorologique po
 - Ensuite, j'ai utilisé l'opérateur `$project` qui me permet de projeter seulement la `température`, les `mois` qui sont créé grâce à l'opérateur `$month` qui me retourne le mois de ma date sous la forme d'un nombre compris entre 1 et 12 (dans notre cas, 1 à 3 car nous n'avons seulement que les trois premiers mois.) et les "stations" (issues de mon champ `Country/Region`). 
 - J'ai par la suite groupé mes documents grâce à l'opérateur `$group` par les mois et les stations en calculant la température moyenne au moyen de l'opérateur `$avg`. 
 - Enfin, j'ai réalisé un tri via la méthode `sort` sur les mois et les stations par ordre croissant/alphabetique
+
+***Entrée***
 ```js
 /*
 month: 1 = Janvier
@@ -155,6 +159,8 @@ Afin de Trouvez la station météorologique qui a enregistré la plus haute temp
 - J'ai par la suite groupé mes documents grâce à l'opérateur `$group` par les stations en ne prenant que les valeurs maximum dans chaque station.
 - De plus, j'ai réalisé un tri via l'opérateur `$sort` en triant les `température maximum` par ordre décroissant.
 - Enfin, avec l'opérateur `$limit` j'ai limité l'affiche au premier élément qui grâce au trie réalisé m'affiche mon document ayant la `température maximum`.
+
+***Entrée***
 ```js
 /*
 month: 1 = Janvier
@@ -207,6 +213,7 @@ a. Exportez les résultats des requêtes dans un fichier CSV pour un usage ulté
 
 Pour réaliser un export, il faut tout simplement réalisé la requête suivant dans un `shell` :
 
+***Entrée***
 ```js
 mongoexport --collection=donnees --db=meteo --out=meteo.json
 ```
