@@ -1,0 +1,6 @@
+{"_id":{"$oid":"63e2aae953d8ddd325dd2807"},"nom":"Super salle","capacite":1500,"adresse":{"ville":"Musiqueville"}}
+{"_id":{"$oid":"63e2b20e53d8ddd325dd280a"},"nom":"Super salle","capacite":1500,"adresse":{"ville":"Musiqueville","codePostal":"84350"}}
+{"_id":1,"nom":"AJMI Jazz Club","adresse":{"numero":4,"voie":"Rue des Escaliers Sainte-Anne","codePostal":"84000","ville":"Avignon","localisation":{"type":"Point","coordinates":[43.951616,4.808657]}},"styles":["jazz","soul","funk","blues"],"avis":[{"date":{"$date":"2019-11-01T00:00:00Z"},"note":8},{"date":{"$date":"2019-11-30T00:00:00Z"},"note":9}],"capacite":300}
+{"_id":2,"nom":"Paloma","adresse":{"numero":250,"voie":"Chemin de l'Aérodrome","codePostal":"30000","ville":"Nîmes","localisation":{"type":"Point","coordinates":[43.85643,4.405415]}},"avis":[{"date":{"$date":"2019-07-06T00:00:00Z"},"note":10}],"capacite":4000}
+{"_id":3,"nom":"Sonograf","adresse":{"voie":"D901","codePostal":"84250","ville":"Le Thor","localisation":{"type":"Point","coordinates":[43.923005,5.020077]}},"capacite":200,"styles":["blues","rock"],"verifie":false}
+{"_id":{"$oid":"63e3514f44a854c16c0feed8"},"nom":"Super salle","capacite":1500,"adresse":{"ville":"Musiqueville","codePostal":"84350"}}
