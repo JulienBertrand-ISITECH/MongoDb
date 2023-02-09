@@ -579,7 +579,7 @@ La nature de votre application devra impacter votre logique d'indexation :
 
 Montrer deux requetes : une sans indexation et une avec et comment les mettre en place.
 [doc getIndex](https://www.mongodb.com/docs/manual/reference/method/db.collection.getIndexes/)
-[doc createIndex](https://www.geeksforgeeks.org/mongodb-db-collection-createindex-method/#:~:text=The%20indexes%20are%20ordered%20by,index%2C%202d%20index%2C%20etc.)
+[doc createIndex](https://www.mongodb.com/docs/manual/reference/method/db.collection.createIndex/)
 [doc dropIndex()](https://www.mongodb.com/docs/manual/reference/method/db.collection.dropIndex/)
 
 ```js
@@ -1095,3 +1095,4 @@ var pipeline = [{
 	}
 }]
 ```
+
